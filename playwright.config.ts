@@ -1,13 +1,12 @@
 import { defineConfig, devices } from "@playwright/test";
+import { e2ePort } from "./e2e/port";
 
-// Playwright config for browser-driven end-to-end tests. We launch our own
-// dev server here (Playwright reuses an existing one if it's already up on
-// the port, so `npm run dev` + `npm run test:e2e` in two terminals works
-// fine too).
-//
-// Browsers are NOT downloaded automatically by the npm install. Run
-// `npx playwright install --with-deps chromium` before the first local
-// `npm run test:e2e`. CI installs them in the workflow step.
+// End-to-end tests start their own dev server on this copy's own port (e2e/port.ts) with an empty built-in database
+// in .data/e2e, so a run here never meets another coder's server or data. Browsers: `npx playwright install chromium`
+// once before the first local run; CI installs them itself.
+const port = e2ePort(process.cwd());
+const baseURL = `http://localhost:${port}`;
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
@@ -17,29 +16,18 @@ export default defineConfig({
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
 
   use: {
-    baseURL: process.env.E2E_BASE_URL ?? "http://localhost:3010",
+    baseURL,
     trace: "on-first-retry",
     screenshot: "only-on-failure",
-    video: "retain-on-failure",
   },
 
-  projects: [
-    {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
-    },
-    {
-      name: "mobile-safari",
-      use: { ...devices["iPhone 13"] },
-    },
-  ],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 
-  // Boot `next dev` ourselves so a clean `npx playwright test` works. If
-  // you already have `npm run dev` in another terminal, Playwright reuses it.
   webServer: {
-    command: "npx next dev -p 3010",
-    url: "http://localhost:3010",
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    command: "npm run e2e:server",
+    url: baseURL,
+    env: { PORT: String(port), GUILDHALL_DATA_DIR: ".data/e2e" },
+    reuseExistingServer: false,
+    timeout: 180_000,
   },
 });
