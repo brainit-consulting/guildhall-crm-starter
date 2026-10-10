@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Inter, Patrick_Hand } from "next/font/google";
+import { IBM_Plex_Sans, Young_Serif } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 
-const patrickHand = Patrick_Hand({
+const youngSerif = Young_Serif({
   weight: "400",
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-display",
+  variable: "--font-young-serif",
 });
 
-const inter = Inter({
+const plex = IBM_Plex_Sans({
+  weight: ["400", "500", "600"],
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-sans",
+  variable: "--font-plex",
 });
 
 export const metadata: Metadata = {
@@ -27,18 +28,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${patrickHand.variable} ${inter.variable}`}
-    >
+    <html lang="en" suppressHydrationWarning className={`${youngSerif.variable} ${plex.variable}`}>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
       </body>

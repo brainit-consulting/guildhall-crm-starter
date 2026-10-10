@@ -2,78 +2,76 @@
 
 @variant dark (&:where(.dark, .dark *));
 
-@theme {
-  /* Brand color — warm orange shared across themes */
-  --color-brand: #C9892F;
-  --color-brand-hover: #A56C25;
-  --color-brand-soft: #E8A95F;
+/* Guildhall's tokens (see DESIGN.md). Tailwind classes: bg-paper, bg-panel, text-ink, text-muted, border-rule,
+   text-accent / bg-accent, text-danger, font-display, font-sans. */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-accent: var(--accent);
+  --color-danger: var(--danger);
 
-  /* Display + sans font stacks (variables come from next/font in layout.tsx) */
-  --font-display: var(--font-display), ui-serif, Georgia, "Brush Script MT", cursive;
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-
-  /* Warm "neutral" palette — overrides Tailwind's default cold neutrals so
-     existing dark:bg-neutral-800 / border-neutral-200 / etc. automatically
-     warm up across the codebase without touching component classes. */
-  --color-neutral-50:  #F8F2E3;
-  --color-neutral-100: #F0E7CF;
-  --color-neutral-200: #E0D2A8;
-  --color-neutral-300: #C9B580;
-  --color-neutral-400: #A89263;
-  --color-neutral-500: #806E4A;
-  --color-neutral-600: #5C4F35;
-  --color-neutral-700: #3F3625;
-  --color-neutral-800: #2A2418;
-  --color-neutral-900: #1A1410;
-  --color-neutral-950: #14090A;
+  --font-display: var(--font-young-serif), Georgia, serif;
+  --font-sans: var(--font-plex), sans-serif;
+  --radius-sm: 2px;
 }
 
-/* Light mode (default + explicit .light class) */
 :root,
 .light {
-  --background: #F5EFE0;
-  --foreground: #2A1F18;
-  --card: #FAF6EA;
-  --border: #E0D2A8;
+  --paper: #F5F0E6;
+  --panel: #FBF8F2;
+  --ink: #22201C;
+  --muted: #6B645A;
+  --rule: #D9CFBD;
+  --accent: #1E5E57;
+  --danger: #9B2C1F;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #14090A;
-    --foreground: #F5EFE0;
-    --card: #1F1410;
-    --border: #3F3625;
+  :root:not(.light) {
+    --paper: #1B1916;
+    --panel: #24211D;
+    --ink: #EDE6D8;
+    --muted: #A79E8F;
+    --rule: #3A352E;
+    --accent: #5FA89E;
+    --danger: #E07A6A;
     color-scheme: dark;
   }
 }
 
 .dark {
-  --background: #14090A;
-  --foreground: #F5EFE0;
-  --card: #1F1410;
-  --border: #3F3625;
+  --paper: #1B1916;
+  --panel: #24211D;
+  --ink: #EDE6D8;
+  --muted: #A79E8F;
+  --rule: #3A352E;
+  --accent: #5FA89E;
+  --danger: #E07A6A;
   color-scheme: dark;
 }
 
-html, body {
-  background: var(--background);
-  color: var(--foreground);
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-sans);
+  font-size: 15px;
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, .font-display {
+h1,
+h2,
+h3,
+.font-display {
   font-family: var(--font-display);
-  letter-spacing: 0.005em;
+  font-weight: 400;
 }
 
-.dark select option {
-  background-color: #1F1410;
-  color: #F5EFE0;
-}
-.light select option {
-  background-color: #FAF6EA;
-  color: #2A1F18;
+select option {
+  background-color: var(--panel);
+  color: var(--ink);
 }
