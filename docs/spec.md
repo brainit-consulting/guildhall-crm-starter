@@ -57,7 +57,7 @@ An MCP endpoint at `/mcp` (Streamable HTTP, MCP spec 2026-07-28) so a business o
 such as Claude or ChatGPT. (I4–I12)
 
 - **Sign-in:** OAuth through Better-Auth's `@better-auth/oauth-provider` and `@better-auth/mcp`, with a consent page
-  naming the agent and what it may do. Scopes `guildhall:read` and `guildhall:write`. Each agent acts as the person
+  naming the agent, where the owner of the account chooses Read only (the default) or Read and change. Scopes `guildhall:read` and `guildhall:write`. Each agent acts as the person
   who connected it. (I5)
 - **Read tools** (`readOnlyHint`): `search_contacts`, `get_contact`, `get_company`, `get_deal`, `list_pipeline`,
   `list_tasks_due`, `list_clients`, `list_projects`, `get_invoice`. (I4, I12)

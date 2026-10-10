@@ -14,4 +14,4 @@ Every signed-in page needs the same way around Guildhall.
 - [ ] Tests: a Playwright test that moves between Home and Settings using the menu, at desktop and phone width.
 - [ ] Tried in a browser
 
-Depends on #<number of the issue "Sign-up and sign-in pages">
+Depends on #<number of the issue "The first person to sign up owns the Guildhall">

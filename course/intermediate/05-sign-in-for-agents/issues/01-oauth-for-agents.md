@@ -8,9 +8,10 @@ Before an agent can reach my Guildhall over the internet, it must sign in as me,
   - The protected resource is `<app address>/mcp`.
   - Scopes: `guildhall:read` and `guildhall:write`, plus `openid profile email offline_access`.
   - Agents register themselves (dynamic client registration) and must use PKCE.
-- A consent page `/consent`, in Guildhall's look: "<agent name> wants to read your Guildhall" (and "…and add
-  contacts, log activities and move deals" when it asks for `guildhall:write`), with "Allow" and "Don't allow".
-  Signing in first if needed.
+- A consent page `/consent`, in Guildhall's look: "<agent name> wants to use your Guildhall", signing in first if
+  needed. I choose what it may do there, whatever the agent asked for: **Read only** (selected by default) or **Read
+  and change** (adds contacts, logs activities, moves deals). Then "Allow" or "Don't allow". The agent's token
+  carries `guildhall:write` only if I chose Read and change.
 - The discovery addresses agents look for: `/.well-known/oauth-protected-resource` (and `…/mcp`),
   `/.well-known/oauth-authorization-server` and `/.well-known/openid-configuration` (also under `/api/auth`),
   answered by Better-Auth.
@@ -23,5 +24,6 @@ Before an agent can reach my Guildhall over the internet, it must sign in as me,
 ## Done when
 - [ ] `/mcp` without a token answers 401 with the `resource_metadata` address; the discovery addresses answer JSON.
 - [ ] The MCP Inspector connects to the live address, signs in through the consent page and lists the tools.
-- [ ] Tests: integration tests for the 401 and the discovery responses; a Playwright test for the consent page.
+- [ ] Tests: integration tests for the 401, the discovery responses, and that Read only never grants
+  `guildhall:write`; a Playwright test for the consent page.
 - [ ] Tried with the MCP Inspector
