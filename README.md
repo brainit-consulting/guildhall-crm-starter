@@ -1,80 +1,33 @@
-# AgenticBuilder
+# Guildhall CRM
 
-A lean Next.js 16 + Better-Auth + Drizzle/Neon quickstart for new SaaS apps.
+A CRM for a small business: contacts, companies, deals on a pipeline board, tasks, a dashboard, a public enquiry
+form and, later, agents such as Claude connected over MCP. This repo is the **starter**: sign-in, a database and the
+house rules. The features are built by [Code Dungeon](https://codedungeon-guide.vercel.app)'s coders, one issue at a
+time, in the Guildhall courses.
 
-Trunk: auth, DB, a working `notes` demo feature, conventions. Modules:
-opt-in Stripe billing, Vercel AI SDK, Vercel Blob, Resend email, expanded
-testing, role gates, admin dashboard.
+## Start your own
 
-## Quick start (manual)
+1. On GitHub, press **Use this template**, then **Create a new repository** (private is fine).
+2. Connect it to Code Dungeon as a chamber. The course's lessons say exactly how.
 
-1. Use this template (GitHub) or `git clone … && rm -rf .git && git init`
-2. `npm install`
-3. Copy `.env.example` → `.env.local` and fill in:
-   - `DATABASE_URL` — a Neon Postgres URL (https://console.neon.tech)
-   - `BETTER_AUTH_SECRET` — `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`
-   - `BETTER_AUTH_URL` — `http://localhost:3000` for dev
-   - `OWNER_EMAIL` — your email (bypasses every role/tier gate)
-4. `npm run db:generate && npm run db:migrate`
-5. `npm run dev` and visit http://localhost:3000
+Nothing needs setting up on your computer: the app keeps its data in a built-in database in `.data/`. Going live on
+Vercel needs two settings, described in `.env.example`.
 
-## Quick start (Claude Code)
+## For the coders
 
-Install the onboarding skill globally once, then trigger it in any
-agent that supports skills (Claude Code, Cursor, etc.):
+Read `AGENTS.md`. Commands:
 
-```bash
-npx skills add -g brainit-consulting/agenticbuilder-onboarding
-```
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | brings the built-in database up to date, then runs the app |
+| `npm test` | unit and integration tests (in-memory database) |
+| `npm run test:e2e` | browser tests on this copy's own port |
+| `npm run db:generate` | writes a migration after a schema change |
 
-Open a fresh terminal in an empty directory and say *"create an
-agenticbuilder app"* — the skill scaffolds the repo from this template,
-renames it, sets up the database and auth secret, lets you pick modules,
-and links Vercel. Already inside an unmodified clone of this repo? Just
-say *"onboard"* and it picks up at the rename step.
+## What's in `course/`
 
-## Two paths through this template
+The issues and briefs students file in each chapter of the courses. The app never reads that folder.
 
-This template can be used two ways. Pick what matches your project.
+## Licence
 
-### Path A — "Full demo" (recommended for first-time users)
-
-Clone the default branch. You get the trunk PLUS all 6 modules already
-installed and wired into the demo (auth, email-verification, password
-reset, AI-Gateway chat, blob uploads, vitest integration tests,
-admin dashboard, role gates). The onboarding skill renames + sets up
-env, but doesn't strip modules.
-
-```bash
-gh repo create my-app --template brainit-consulting/agenticbuilder --private
-```
-
-### Path B — "Lean" (use the skill's module-add flow as designed)
-
-Clone the `v0.1.0` tag — the lean trunk before any modules were
-installed. The skill's STEP 5 will offer each module as a checklist;
-pick only what you need.
-
-```bash
-gh repo create my-app --template brainit-consulting/agenticbuilder --private
-cd my-app && git checkout v0.1.0
-```
-
-## Modules
-
-Each `modules/<name>/` is a self-contained instructions packet (README +
-source + deps + env example + migrations). Open the README for install
-steps. See `modules/README.md` for the shelf contract.
-
-## Conventions
-
-See [AGENTS.md](./AGENTS.md). `CLAUDE.md` aliases to it.
-
-## Stack
-
-Next.js 16.2.6 · React 19.2.4 · TypeScript 5 · Tailwind v4 · Better-Auth
-1.6.11 · Drizzle ORM 0.45.2 · Neon serverless 1.1.0 · Zod 4 · Vitest 4
-
-## License
-
-MIT (set at publish time).
+MIT. See `LICENSE`.

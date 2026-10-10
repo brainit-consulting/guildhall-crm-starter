@@ -1,9 +1,7 @@
 # Plans
 
-Non-trivial work in this repo starts with a plan here.
+Work that touches more than three files starts with a plan here (AGENTS.md section 5).
 
-- Use `_template.md` (markdown) or `_template.html` (printable) as the starting point.
-- File naming: `NNN-<slug>.md`, where `NNN` is a zero-padded sequence number.
-- Plans are living documents: when you complete a checklist item, update the file
-  in the same turn. Don't wait for someone to ask.
-- See AGENTS.md §3 for the working rules around plans.
+- Start from `_template.md`.
+- Name it `NNN-<slug>.md`, where `NNN` is the next zero-padded number.
+- Plans are living documents: tick a step in the same turn you finish it.

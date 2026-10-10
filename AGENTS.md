@@ -1,101 +1,52 @@
-# AgenticBuilder — Agent Operating Manual
+# Guildhall CRM: house rules
 
-## 1. Project shape
-- Next.js 16 App Router on Vercel. Better-Auth + Drizzle + Neon Postgres.
-- Trunk runs without any module. `modules/` is a self-service shelf.
-- Demo feature: `src/app/(app)/notes/` — read it before adding new features.
+## 1. What this is
 
-## 2. Before you touch Next.js code
-Read `node_modules/next/dist/docs/` first. This repo pins Next.js 16.2.6;
-its API differs from training-data Next.js in concrete ways:
-- middleware lives in `proxy.ts` (root), not `middleware.ts`
-- Cache Components: `'use cache'` directive + `cacheLife` / `cacheTag`
-- React 19 APIs (`use()`, Actions, `<form action={fn}>`)
+Guildhall is a CRM for one small business per copy. Read `docs/spec.md` for the product and `DESIGN.md` before any
+UI work. Each issue you're given adds one piece; build that piece, nothing more.
 
-## 3. Design system (front-end work)
+## 2. Stack
 
-**Read [`docs/design-system.md`](./docs/design-system.md) before any UI change.**
-It defines the brand colors, theme tokens, fonts (Patrick Hand for display
-+ Inter for body), warm-neutral palette overrides, component variants,
-and the inspiration source (theblackpot.dreamforgeworld.com).
+Next.js 16.3.5 (App Router), React 19.2.4, TypeScript, Better-Auth 1.7.5, Drizzle ORM 0.45.2, Tailwind v4, Zod 4,
+Vitest 4, Playwright 1.63. Versions are pinned exactly: don't upgrade or add a library unless the issue asks for it.
+Before Next.js-specific code, read the docs bundled in `node_modules/next/dist/docs/`. Middleware lives in
+`src/proxy.ts` (Next 16's name for it).
 
-The short version:
-- **Brand orange**: `#C9892F` (`bg-brand`, `text-brand`)
-- **Fonts**: `font-display` for h1-h3 + brand wordmark; default sans for body
-- **Tailwind's `neutral-*` palette is overridden** to warm browns. `dark:bg-neutral-800` is warm dark brown, not cold grey. Don't assume cold.
-- **Themes**: light (warm cream) and dark (warm dark brown), toggled via `<ThemeToggle>` from `@/components/theme-toggle`
+## 3. Database
 
-This is the trunk default brand. Forks meant for a different brand family
-should swap the tokens + fonts in one go (`globals.css` + `layout.tsx`) and
-update the doc — don't sprinkle one-off overrides.
+- On this computer the app uses PGlite, a Postgres that runs inside the app, in `.data/` (git-ignored; every copy has
+  its own). On Vercel it uses Neon through `DATABASE_URL`. Never require `DATABASE_URL` locally.
+- To change the schema: edit `src/lib/db/schema.ts`, run `npm run db:generate`, commit the new SQL in
+  `drizzle/migrations/`. `npm run dev` and `npm run build` apply it (`scripts/migrate.mjs`).
+- Never edit or delete a migration that's already on `main`; add a new one.
+- Import the database as `db` from `src/lib/db/client.ts`.
 
-When you reach for a one-off color or font, stop and check the doc. If it's not a token, propose adding one.
+## 4. Settings
 
-## 4. Working rules
-- **Plans**: non-trivial work goes through `plans/<NNN>-<slug>.md` first.
-  When you complete a checklist item, update the plan in the same turn.
-  Don't wait to be asked.
-- **Status docs**: ongoing initiatives get a doc in `docs/<topic>.md` using
-  `docs/_status-template.md`. Update it when state changes.
-- **No UUIDs in UI**: always resolve IDs to human-readable labels before
-  rendering. If you can't, the data model is wrong.
-- **Owner bypass**: `OWNER_EMAIL` (env) bypasses every role/tier gate
-  unconditionally. Test this path whenever you add a gate.
-- **Env vars**: add to `src/lib/env.ts` (zod schema) AND `.env.example`.
-  Never read `process.env.X` directly in app code.
-- **DB changes**: edit `src/lib/db/schema.ts`, then
-  `npm run db:generate && npm run db:migrate`. Commit the generated SQL.
-- **Parallel agents (optional)**: this repo is friendly to parallel agent
-  workflows — `.claude/worktrees/` is gitignored so tools like Claude
-  Code's `claude agents` view can isolate sessions out of the box. Use
-  it if you like; no convention here depends on it.
-- **Client/server constants split**: any constant shared between server
-  components AND client components MUST live in a separate module that
-  doesn't import server-only code (DB client, `env.ts`, `auth/server.ts`).
-  When a client component imports a constant from a server-only module,
-  the bundler drags the whole module's transitive dependencies into the
-  browser bundle — `env.ts` then throws "DATABASE_URL: expected string,
-  received undefined" at module load. Put shared constants in a file
-  like `src/lib/<feature>/constants.ts` and re-export from the
-  server-only module if the server also uses them.
-- **drizzle-kit `generate` in non-interactive shells**: when adding a new
-  table while removing another (e.g., renaming a feature), drizzle-kit's
-  diff prompts "Is X a rename of Y?" and requires a TTY. In CI / agent
-  shells this hangs forever. Workaround: write the migration SQL by hand
-  + the corresponding `meta/<NNNN>_snapshot.json` + bump
-  `meta/_journal.json`. Use `drizzle-kit migrate` to apply (that one is
-  non-interactive). Reference: apptracker's `0003_swap_notes_for_apps.sql`
-  for the format.
+Read settings only through `src/lib/env.ts`; never read `process.env` anywhere else. A new setting goes in its schema,
+its tests and `.env.example`, with a default that works locally.
 
-## 5. Verification discipline
-Before claiming "done":
-- `npm run typecheck` passes
-- `npm run lint` passes
-- `npm test` passes (trunk has a small test surface; the vitest module
-  expands it)
-- For UI work: open the page in a browser and use the feature.
-  Type-checking is not feature-checking.
+## 5. Working rules
 
-## 6. Module installation
-Modules live in `modules/<name>/`. Each has its own README — follow it
-step-by-step. The `agenticbuilder-onboarding` skill automates this for
-new clones; install once with
-`npx skills add -g brainit-consulting/agenticbuilder-onboarding`, then
-say "install module <name>" in your agent.
+- Never show internal IDs (database keys) in the UI. URLs may contain them.
+- Anything touching more than three files starts with a plan in `plans/NNN-slug.md` from `plans/_template.md`; tick
+  its steps as you go.
+- Money is `numeric(12,2)` in the database and a string in TypeScript; never a float.
+- Signed-in pages call `requireSession()` from `src/lib/auth/session.ts`.
+- MCP tools (from the Intermediate course) may return record IDs to agents; the UI still never shows them.
 
-## 7. Vercel
-The Vercel CLI is expected to be installed and authenticated. Use it freely
-for `vercel env pull`, `vercel deploy`, etc. Never commit `.env.local`.
+## 6. Tests ship with the issue
 
-## 8. Tone
-Terse. Code over prose. No emojis unless asked.
+- A rule or calculation: a unit test next to it (`*.test.ts`).
+- Anything that reads or writes data: an integration test (`*.integration.test.ts`) on `createTestDb()` from
+  `src/test/db.ts`, a fresh in-memory database.
+- A new page: a Playwright test in `e2e/`. Before your first run on this computer: `npx playwright install chromium`.
 
-<!-- BEGIN:nextjs-agent-rules -->
+## 7. Done means
 
-# This is NOT the Next.js you know
+`npm run typecheck`, `npm run lint`, `npm test` and `npm run test:e2e` all pass, and you've tried the change in a
+browser yourself.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+## 8. Style
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->
+Terse comments that say why. No emojis. Words in the UI follow `DESIGN.md`.
