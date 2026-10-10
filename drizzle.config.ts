@@ -1,21 +1,15 @@
 import { defineConfig } from "drizzle-kit";
-import { config as loadEnv } from "dotenv";
 
-loadEnv({ path: ".env.local" });
-
-const databaseUrl = process.env.DATABASE_URL;
-if (!databaseUrl) {
-  // Allow drizzle-kit to run for codegen (`db:generate`) without DATABASE_URL,
-  // but `db:migrate` requires it and will fail with a clearer error from
-  // drizzle-kit if it isn't set.
-  console.warn("drizzle.config: DATABASE_URL not set (.env.local missing or empty).");
-}
-
+// `npm run db:generate` writes SQL from schema.ts and needs no database. Migrations are applied by
+// scripts/migrate.mjs (before `npm run dev` and `npm run build`). `db:studio` opens Neon when DATABASE_URL is set,
+// otherwise the built-in database in .data/pglite.
 export default defineConfig({
   schema: "./src/lib/db/schema.ts",
   out: "./drizzle/migrations",
   dialect: "postgresql",
-  dbCredentials: { url: databaseUrl ?? "" },
+  ...(process.env.DATABASE_URL
+    ? { dbCredentials: { url: process.env.DATABASE_URL } }
+    : { driver: "pglite", dbCredentials: { url: process.env.GUILDHALL_DATA_DIR ?? ".data/pglite" } }),
   verbose: true,
   strict: true,
 });

@@ -5,8 +5,7 @@ describe("vitest smoke", () => {
     expect(1 + 1).toBe(2);
   });
 
-  it("loads test env", () => {
-    expect(process.env.NODE_ENV).toBe("test");
-    expect(process.env.DATABASE_URL).toBeDefined();
+  it("uses the in-memory built-in database", () => {
+    expect(process.env.GUILDHALL_DATA_DIR).toBe("memory://");
   });
 });

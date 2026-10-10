@@ -1,36 +1,34 @@
+// Guildhall's settings, checked in one place. On this computer nothing is needed: the built-in database and a
+// development secret. On Vercel the database address and a real secret are required, and a missing one stops
+// the app with its name rather than running live on stand-ins.
 import { z } from "zod";
 
-const envSchema = z.object({
-  DATABASE_URL: z.string().min(1, "DATABASE_URL is required"),
-  BETTER_AUTH_SECRET: z
-    .string()
-    .min(32, "BETTER_AUTH_SECRET must be at least 32 characters"),
-  BETTER_AUTH_URL: z.string().url("BETTER_AUTH_URL must be a valid URL"),
-  OWNER_EMAIL: z.string().email("OWNER_EMAIL must be a valid email"),
-  RESEND_API_KEY: z.string().startsWith("re_", "RESEND_API_KEY must start with re_"),
-  EMAIL_FROM: z.string().email("EMAIL_FROM must be a valid email address"),
-  AI_GATEWAY_API_KEY: z
-    .string()
-    .startsWith("vck_", "AI_GATEWAY_API_KEY must start with vck_"),
-  BLOB_READ_WRITE_TOKEN: z
-    .string()
-    .startsWith(
-      "vercel_blob_rw_",
-      "BLOB_READ_WRITE_TOKEN must start with vercel_blob_rw_",
-    ),
+export const DEV_SECRET = "guildhall-development-secret-never-used-live";
+
+const schema = z.object({
+  DATABASE_URL: z.string().min(1).optional(),
+  BETTER_AUTH_SECRET: z.string().min(32, "must be at least 32 characters").optional(),
+  BETTER_AUTH_URL: z.string().url().optional(),
+  PORT: z.string().regex(/^\d+$/).default("3000"),
+  VERCEL: z.string().optional(),
+  VERCEL_PROJECT_PRODUCTION_URL: z.string().optional(),
+  GUILDHALL_DATA_DIR: z.string().default(".data/pglite"),
 });
 
-export type Env = z.infer<typeof envSchema>;
+export type Env = { databaseUrl: string | null; authSecret: string; authUrl: string; onVercel: boolean; dataDir: string };
 
 export function parseEnv(raw: Record<string, string | undefined>): Env {
-  const result = envSchema.safeParse(raw);
-  if (!result.success) {
-    const formatted = result.error.issues
-      .map((i) => `  - ${i.path.join(".") || "(root)"}: ${i.message}`)
-      .join("\n");
-    throw new Error(`Invalid environment:\n${formatted}`);
-  }
-  return result.data;
+  const r = schema.safeParse(raw);
+  if (!r.success)
+    throw new Error("Invalid environment:\n" + r.error.issues.map((i) => `  - ${i.path.join(".")}: ${i.message}`).join("\n"));
+  const e = r.data;
+  const onVercel = e.VERCEL === "1";
+  const missing = onVercel ? (["DATABASE_URL", "BETTER_AUTH_SECRET"] as const).filter((k) => !e[k]) : [];
+  if (missing.length)
+    throw new Error(`Invalid environment:\n${missing.map((k) => `  - ${k}: required on Vercel (Project > Settings > Environment Variables)`).join("\n")}`);
+  const authUrl = e.BETTER_AUTH_URL
+    ?? (onVercel && e.VERCEL_PROJECT_PRODUCTION_URL ? `https://${e.VERCEL_PROJECT_PRODUCTION_URL}` : `http://localhost:${e.PORT}`);
+  return { databaseUrl: e.DATABASE_URL ?? null, authSecret: e.BETTER_AUTH_SECRET ?? DEV_SECRET, authUrl, onVercel, dataDir: e.GUILDHALL_DATA_DIR };
 }
 
 export const env: Env = parseEnv(process.env);

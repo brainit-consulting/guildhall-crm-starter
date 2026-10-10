@@ -17,8 +17,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AgenticBuilder",
-  description: "Lean Next.js + Better-Auth + Drizzle quickstart.",
+  title: "Guildhall",
+  description: "A CRM for your business, built by your guild.",
 };
 
 export default function RootLayout({
