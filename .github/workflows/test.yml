@@ -6,14 +6,11 @@ on:
     branches: [main]
 
 # No secrets: tests use the built-in database. Code Dungeon's auto-merge waits for this to pass.
+# Ubuntu only: a private repo's free Actions minutes count Windows double, and every coder's push runs this.
 jobs:
   test:
-    name: Tests (${{ matrix.os }})
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+    name: Tests
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,13 +22,13 @@ jobs:
       - run: npm run lint
       - run: npm test
       - name: Install Playwright's Chromium
-        run: npx playwright install ${{ matrix.os == 'ubuntu-latest' && '--with-deps' || '' }} chromium
+        run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - run: npm run build
       - name: Upload Playwright report
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ matrix.os }}
+          name: playwright-report
           path: playwright-report/
           retention-days: 7

@@ -8,6 +8,7 @@ export const auth = betterAuth({
   database: drizzleAdapter(db, { provider: "pg" }),
   secret: env.authSecret,
   baseURL: env.authUrl,
+  trustedOrigins: env.trustedOrigins,
   emailAndPassword: { enabled: true, autoSignIn: true, minPasswordLength: 8, requireEmailVerification: false },
   user: { additionalFields: { role: { type: "string", defaultValue: "member", input: false } } },
   session: { expiresIn: 60 * 60 * 24 * 30, updateAge: 60 * 60 * 24 },
