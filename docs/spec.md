@@ -27,7 +27,7 @@ Deal stages are fixed: **New, Contacted, Proposal, Won, Lost**. "Open" means New
 
 ## Pages
 
-- `/signup`, `/signin`, `/home`, `/settings` (owner: allowed emails, the enquiry form link, business name and address, tax rate). (B6, B15, I11)
+- `/signup`, `/signin`, `/home`, `/settings` (owner: allowed emails, the enquiry form link, business address, tax rate). (B6, B15, I11)
 - A left-hand menu; a top bar under 768px. (B6)
 - `/contacts`, `/companies`, `/deals`: tables with search, sorting and (deals) stage filters kept in the address.
   (B7–B9, B13)
@@ -39,6 +39,11 @@ Deal stages are fixed: **New, Contacted, Proposal, Won, Lost**. "Open" means New
 - `/enquire`: the public enquiry form. (B15)
 - `/clients`, `/projects`, invoices with "Download PDF". (I10, I11)
 - `/settings/connections` and `/settings/agent-log` (owner). (I9)
+
+## Your business's look
+
+- The business's name, brand colour and logo, set in `src/lib/brand.ts` and `public/brand/`, replace "Guildhall"
+  and the starter's accent everywhere; accent text keeps at least 4.5 to 1 contrast. (B17)
 
 ## Rules
 
