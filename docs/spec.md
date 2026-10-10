@@ -21,13 +21,13 @@ Intermediate). Build only what your issue asks for; this page is the map, not th
 | Task | title, due date, done, attached to a contact, company or deal | B12 |
 | Client | made from a Won deal's company (or contact) | I10 |
 | Project | name, client, status (Active, Done), budget, start and end dates | I10 |
-| Invoice | number (`INV-0001` upwards), client, optional project, lines (description, quantity, unit price), tax rate from Settings, status (Draft, Sent, Paid) | I11 |
+| Invoice | number (`INV-0001` upwards, never reused), client, optional project, issue and due dates, lines (description, quantity, unit price), tax rate copied from Settings, status (Draft, Sent, Paid) | I11 |
 
 Deal stages are fixed: **New, Contacted, Proposal, Won, Lost**. "Open" means New, Contacted or Proposal.
 
 ## Pages
 
-- `/signup`, `/signin`, `/home`, `/settings` (owner: allowed emails, the enquiry form link, tax rate). (B6, B15, I11)
+- `/signup`, `/signin`, `/home`, `/settings` (owner: allowed emails, the enquiry form link, business name and address, tax rate). (B6, B15, I11)
 - A left-hand menu; a top bar under 768px. (B6)
 - `/contacts`, `/companies`, `/deals`: tables with search, sorting and (deals) stage filters kept in the address.
   (B7–B9, B13)
