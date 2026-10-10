@@ -1,9 +1,13 @@
 // Brings the database up to date before the app starts or builds: Neon when DATABASE_URL is set, otherwise the
-// built-in database in .data/pglite.
+// built-in database in .data/pglite. Vercel preview builds skip it (scripts/migrate-target.mjs).
 import { mkdirSync } from 'node:fs';
+import { migrationTarget } from './migrate-target.mjs';
 
 const folder = 'drizzle/migrations';
-if (process.env.DATABASE_URL) {
+const target = migrationTarget(process.env);
+if (target === 'skip') {
+  console.log('Preview build: migrations run only for the production build.');
+} else if (target === 'neon') {
   const { neon } = await import('@neondatabase/serverless');
   const { drizzle } = await import('drizzle-orm/neon-http');
   const { migrate } = await import('drizzle-orm/neon-http/migrator');
