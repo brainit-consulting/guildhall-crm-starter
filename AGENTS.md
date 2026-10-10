@@ -19,7 +19,9 @@ Before Next.js-specific code, read the docs bundled in `node_modules/next/dist/d
 - To change the schema: edit `src/lib/db/schema.ts`, run `npm run db:generate`, commit the new SQL in
   `drizzle/migrations/`. `npm run dev` and `npm run build` apply it (`scripts/migrate.mjs`).
 - Never edit or delete a migration that's already on `main`; add a new one.
-- Import the database as `db` from `src/lib/db/client.ts`.
+- Import the database as `db` from `src/lib/db/client.ts`. It opens on its first query, never on import: two processes
+  opening the same `.data` folder corrupt it. Don't open PGlite yourself elsewhere, and stop `npm run dev` before
+  running anything else that opens the database.
 
 ## 4. Settings
 
