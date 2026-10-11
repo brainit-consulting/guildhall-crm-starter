@@ -5,5 +5,3 @@ keep text readable against the background whatever my colour is.
 
 My business is called: <your business name>. My brand colour is: <your colour, for example #2F6B4F>. My logo is in the
 repo at `public/brand/`.
-
-The exact issues are in `issues/` if the DungeonMaster's plan goes off-track.
