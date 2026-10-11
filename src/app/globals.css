@@ -76,9 +76,10 @@ select option {
   color: var(--ink);
 }
 
-/* iPhone Safari zooms the page into any field whose text is under 16px, and the 15px base makes text-sm 13px:
-   below 768px every field is 16px. Outside Tailwind's layers, so it wins over the utility classes. */
-@media (max-width: 767px) {
+/* iPhone and iPad Safari zoom the page into any field whose text is under 16px, and the 15px base makes text-sm 13px:
+   on phones and any touch screen (a phone on its side is 844px wide) every field is 16px. Outside Tailwind's layers,
+   so it wins over the utility classes. */
+@media (max-width: 767px), (pointer: coarse) {
   input,
   select,
   textarea {
