@@ -8,7 +8,7 @@ People who find my website should be able to ask for a quote, and land straight 
 - Sending it:
   - finds the contact with that email, or creates one (and the company, if given and new);
   - creates a New deal "Enquiry from <name>" with source "Web form";
-  - logs the message as a note on the deal.
+  - logs the message as a note on the deal, shown as written by "Web form" (no one signed in sent it).
 - Then a thank-you page: "Thanks, <name>. We'll be in touch."
 - A hidden field that people don't see and bots fill in; when it's filled, show the thank-you page but save nothing.
 - At most 5 enquiries per email address per day; after that, show the thank-you page and save nothing.
