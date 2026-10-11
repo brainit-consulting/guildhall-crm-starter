@@ -3,7 +3,8 @@
 ## 1. What this is
 
 Guildhall is a CRM for one small business per copy. Read `docs/spec.md` for the product and `DESIGN.md` before any
-UI work. Each issue you're given adds one piece; build that piece, nothing more.
+UI work, and follow `.claude/skills/mobile-web-polish/SKILL.md` so every page works on phones and iPads (use `dvh`,
+not `vh` or `h-screen`). Each issue you're given adds one piece; build that piece, nothing more.
 
 ## 2. Stack
 
